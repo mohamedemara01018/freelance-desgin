@@ -1,4 +1,4 @@
-import Navbar from '@/components/layout/navbar/Navbar'
+import Navbar from '@/components/layout/public/navbar/Navbar'
 import React from 'react'
 
 function layout({
@@ -8,7 +8,7 @@ function layout({
         <div>
             <Navbar />
             <main className='pt-20'>
-            {children}
+                {children}
             </main>
         </div>
     )

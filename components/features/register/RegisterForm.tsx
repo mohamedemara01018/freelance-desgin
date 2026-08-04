@@ -46,7 +46,7 @@ function RegisterForm() {
 
             {/* Location Row */}
 
-            <div className='grid grid-cols-1 md:grid-cols-2 gap-4'>
+            {/* <div className='grid grid-cols-1 md:grid-cols-2 gap-4'>
                 <div className="flex flex-col items-start gap-1.5 w-full">
                     <label htmlFor="country" className="text-[14px] font-medium text-on-surface">Country</label>
                     <div className="relative group w-full">
@@ -60,7 +60,7 @@ function RegisterForm() {
                         <SelectFeild name='city' id='city' options={[{ label: 'kjfd', value: 'kdjf' }]} />
                     </div>
                 </div>
-            </div>
+            </div> */}
 
             {/* Passwords Row */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">

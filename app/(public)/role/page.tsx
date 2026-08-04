@@ -41,11 +41,11 @@ export default function JoinSelection() {
 
     return (
         <main className="bg-surface px-6 py-16">
-            <div className="mx-auto max-w-[880px] text-center">
+            <div className="mx-auto max-w-220 text-center">
                 <h1 className="text-display-lg text-on-surface">
                     Join as a client or freelancer
                 </h1>
-                <p className="text-body-lg text-(--color-on-surface-variant) mt-4">
+                <p className="text-body-lg text-on-surface-variant mt-4">
                     Select how you&apos;d like to use the GigFlow platform to start your
                     journey.
                 </p>
@@ -59,17 +59,17 @@ export default function JoinSelection() {
                                 type="button"
                                 onClick={() => setSelected(id)}
                                 aria-pressed={isSelected}
-                                className={`card text-left flex flex-col ${isSelected ? "border-primary shadow-[var(--shadow-level-3)]" : ""
+                                className={`card text-left flex flex-col ${isSelected ? "border-primary shadow-(--shadow-level-3)" : ""
                                     }`}
                                 style={{
-                                    backgroundColor: isSelected ? "var(--color-surface)" : "",
+                                    backgroundColor: isSelected ? "var(--color-surface-variant)" : "",
                                 }}
                             >
                                 <span className="bg-primary/10 text-primary flex h-16 w-16 items-center justify-center rounded-full">
                                     <Icon size={28} strokeWidth={2} />
                                 </span>
 
-                                <h2 className="text-headline-md text-(--color-on-surface) mt-6">
+                                <h2 className="text-headline-md text-on-surface mt-6">
                                     {title}
                                 </h2>
 
@@ -85,7 +85,7 @@ export default function JoinSelection() {
                                         >
                                             <CheckCircle2
                                                 size={18}
-                                                className="text-(--color-primary) mt-0.5 shrink-0"
+                                                className="text-primary mt-0.5 shrink-0"
                                             />
                                             <span>{point}</span>
                                         </li>

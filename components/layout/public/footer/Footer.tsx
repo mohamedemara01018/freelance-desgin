@@ -1,4 +1,5 @@
-import { ArrowRight, BoltIcon } from '../../features/landing/Icons';
+import Logo from '@/components/ui/Logo';
+import { ArrowRight, BoltIcon } from '../../../features/landing/Icons';
 
 const connectLinks = ['About Us', 'Careers', 'Help Center'];
 const legalLinks = ['Privacy Policy', 'Terms of Service', 'Cookie Policy'];
@@ -10,12 +11,7 @@ export default function Footer() {
             <div className="max-w-7xl mx-auto px-6 py-14 grid grid-cols-2 md:grid-cols-4 gap-10">
                 {/* Brand */}
                 <div className="col-span-2 md:col-span-1 flex flex-col gap-4">
-                    <div className="flex items-center gap-2.5">
-                        <div className="w-8 h-8 bg-inverse-primary rounded-lg flex items-center justify-center">
-                            <BoltIcon cls="w-4 h-4 text-on-primary-fixed" />
-                        </div>
-                        <span className="font-display text-lg font-bold text-inverse-on-surface">GigFlow</span>
-                    </div>
+                    <Logo />
                     <p className="text-sm text-inverse-on-surface/60 leading-relaxed">
                         The elite talent marketplace for building the future of work, one project at a time.
                     </p>

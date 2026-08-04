@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import ToggleTheme from '@/components/ui/ToggleTheme';
-import { BoltIcon } from '@/utils/icons.utils';
+import Logo from '@/components/ui/Logo';
 
 export default function Navbar() {
   const [menuOpen, setMenuOpen] = useState(false);
@@ -25,17 +25,9 @@ export default function Navbar() {
         : 'bg-transparent'
         }`}
     >
-      <nav className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
+      <nav className="wrapper mx-auto px-6 h-16 flex items-center justify-between">
         {/* Logo */}
-        <Link href="/" className="flex items-center gap-2.5 group">
-          <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center shadow-lg shadow-primary/20 group-hover:shadow-primary/30 transition-shadow">
-            <BoltIcon className={'text-on-primary'} />
-          </div>
-          <span className="font-display text-lg font-bold text-on-surface tracking-tight">
-            GigFlow
-          </span>
-        </Link>
-
+        <Logo />
         {/* Desktop Nav */}
         <ul className="hidden md:flex items-center gap-1">
           {[
