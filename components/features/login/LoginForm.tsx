@@ -1,4 +1,7 @@
-import { ArrowRight, EyeIcon, EyeOffIcon, LockIcon, MailIcon } from 'lucide-react';
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import FormError from '@/components/ui/FormError';
+import { authService } from '@/services/auth.service';
+import { ArrowRight, EyeIcon, EyeOffIcon, Loader2, LockIcon, MailIcon } from 'lucide-react';
 import Link from 'next/link';
 import { FormEvent, useState } from 'react'
 
@@ -8,21 +11,47 @@ function LoginForm() {
     const [password, setPassword] = useState("");
     const [rememberMe, setRememberMe] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
+    const [error, setError] = useState('');
     const [emailFocused, setEmailFocused] = useState(false);
     const [passwordFocused, setPasswordFocused] = useState(false);
 
-    const handleLogin = (e: FormEvent) => {
+
+    const validate = () => {
+        if (!email.trim()) return "Email is required";
+        if (!password.trim()) return "Password is required";
+        return "";
+    };
+
+    const handleLogin = async (e: FormEvent) => {
         e.preventDefault();
+
+        const vaildateError = validate();
+        if (vaildateError) {
+            setError(vaildateError);
+            return
+        }
         setIsLoading(true);
         // Simulate login API call
-        setTimeout(() => {
-            setIsLoading(false);
-            alert("Login submitted!");
-        }, 1500);
+        try {
+            const res = await authService.login({
+                "email": email,
+                "password": password
+            })
+            console.log(res)
+
+            setEmail('');
+            setPassword('');
+            setError('');
+
+        } catch (error: any) {
+            setError(error.message)
+        } finally {
+            setIsLoading(false)
+        }
     };
     return (
         <form className="flex flex-col gap-4" onSubmit={handleLogin}>
-
+            <FormError error={error} />
             {/* Email Field */}
             <div className="flex flex-col gap-1">
                 <label className={`text-sm font-medium ml-1 transition-colors ${emailFocused ? 'text-primary' : 'text-on-surface-variant'}`} htmlFor="email">
@@ -138,7 +167,7 @@ function LoginForm() {
                 }}
             >
                 {isLoading ? (
-                    <span className="animate-spin w-5 h-5 border-2 border-on-primary border-t-transparent rounded-full"></span>
+                    <Loader2 size={18} className="animate-spin" />
                 ) : (
                     <>
                         <span>Sign In to GigFlow</span>

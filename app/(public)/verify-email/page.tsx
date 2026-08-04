@@ -1,17 +1,25 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
-import { ArrowLeft, CheckCircleIcon, LoaderCircle, MailOpen } from "lucide-react";
+import FormError from "@/components/ui/FormError";
+import { authService } from "@/services/auth.service";
+import { selectMeSlice } from "@/store/slices/authSlice";
+import { ArrowLeft, Loader2, LoaderCircle, MailOpen } from "lucide-react";
+import Link from "next/link";
 import React, { useState, useEffect, useRef, FormEvent, KeyboardEvent, ChangeEvent } from "react";
+import { useSelector } from "react-redux";
 
 
 
 export default function VerifyEmailPage() {
   const [otp, setOtp] = useState<string[]>(["", "", "", "", "", ""]);
   const [timeLeft, setTimeLeft] = useState(59);
-  const [isVerifying, setIsVerifying] = useState(false);
-  const [isVerified, setIsVerified] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('')
+  const [resendLoading, setResendLoading] = useState(false)
+  const [resendError, setResendError] = useState('')
   const inputRefs = useRef<(HTMLInputElement | null)[]>([]);
-
+  const me = useSelector(selectMeSlice);
   useEffect(() => {
     if (timeLeft > 0) {
       const timer = setTimeout(() => setTimeLeft(timeLeft - 1), 1000);
@@ -38,24 +46,39 @@ export default function VerifyEmailPage() {
     }
   };
 
-  const handleSubmit = (e: FormEvent) => {
+  const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
-    setIsVerifying(true);
-    setTimeout(() => {
-      setIsVerifying(false);
-      setIsVerified(true);
-      setTimeout(() => {
-        alert("Email verified successfully!");
-        setOtp(["", "", "", "", "", ""]);
-        setIsVerified(false);
-        inputRefs.current[0]?.focus();
-      }, 1000);
-    }, 1500);
+    setLoading(true)
+
+    try {
+      console.log(otp.join('').trim())
+      await authService.verfiyEmail({
+        email: me?.email,
+        code: otp.join('').trim()
+      })
+      setOtp(["", "", "", "", "", ""])
+    } catch (error: any) {
+      setError(error.message)
+    } finally {
+      setLoading(false)
+    }
   };
 
-  const handleResend = () => {
+  const handleResend = async () => {
     if (timeLeft === 0) {
       setTimeLeft(59);
+    }
+    setResendLoading(true);
+    try {
+      const res = await authService.resendEmailCode({
+        "email": me?.email
+      })
+      console.log(res)
+
+    } catch (error: any) {
+      setResendError(error.message)
+    } finally {
+      setResendLoading(false)
     }
   };
 
@@ -68,6 +91,10 @@ export default function VerifyEmailPage() {
           <div className="rounded-xl border border-outline-variant p-8 md:p-10 transition-all duration-300"
             style={{ boxShadow: 'var(--shadow-level-2)' }}>
             <div className="flex flex-col items-center text-center">
+              <div className="w-full py-4">
+                <FormError error={error} />
+                <FormError error={resendError} />
+              </div>
               {/* Icon/Visual */}
               <div className="w-16 h-16 rounded-full flex items-center justify-center mb-6 bg-inverse-on-surface">
                 <MailOpen className="text-(--text-headline-lg-size)" />
@@ -101,19 +128,15 @@ export default function VerifyEmailPage() {
 
                 <button
                   type="submit"
-                  disabled={isVerifying || isVerified}
-                  className={`w-full flex items-center justify-center gap-2 py-4 rounded-lg font-sans text-sm leading-5 tracking-[0.01em] font-medium text-white uppercase transition-all duration-200 ${isVerified
+                  disabled={loading || !!error}
+                  className={`w-full flex items-center justify-center gap-2 py-4 rounded-lg font-sans text-sm leading-5 tracking-[0.01em] font-medium text-white uppercase transition-all duration-200 ${loading
                     ? 'bg-[#006b2c]'
                     : 'bg-linear-to-br from-[#00873a] to-[#006b2c] shadow-[inset_0_1px_0_rgba(255,255,255,0.15)] hover:opacity-95 hover:-translate-y-px active:scale-95 disabled:opacity-70 disabled:hover:translate-y-0 disabled:active:scale-100'
                     }`}
                 >
-                  {isVerifying ? (
+                  {loading ? (
                     <>
                       <LoaderCircle className="animate-spin w-5 h-5" /> Verifying...
-                    </>
-                  ) : isVerified ? (
-                    <>
-                      <CheckCircleIcon className="w-5 h-5" /> Verified
                     </>
                   ) : (
                     "Verify Email"
@@ -132,7 +155,20 @@ export default function VerifyEmailPage() {
                     className={`font-sans text-xs leading-4 font-semibold text-[#006b2c] ml-1 transition-all duration-200 ${timeLeft > 0 ? "opacity-50 cursor-not-allowed" : "hover:underline cursor-pointer"
                       }`}
                   >
-                    Resend Code {timeLeft > 0 && <span className="font-normal">(0:{timeLeft.toString().padStart(2, "0")})</span>}
+                    {
+                      loading ? (
+                        <Loader2 size={18} className="animate-spin" />
+                      ) : (
+                        <>
+                          Resend Code{" "}
+                          {timeLeft > 0 && (
+                            <span className="font-normal">
+                              (0:{timeLeft.toString().padStart(2, "0")})
+                            </span>
+                          )}
+                        </>
+                      )
+                    }
                   </button>
                 </p>
               </div>
@@ -141,10 +177,10 @@ export default function VerifyEmailPage() {
 
           {/* Back to Login */}
           <div className="mt-8 text-center">
-            <a className="flex items-center justify-center gap-2 font-sans text-sm leading-5 tracking-[0.01em] font-medium text-on-surface hover:text-primary transition-colors" href="#">
+            <Link className="flex items-center justify-center gap-2 font-sans text-sm leading-5 tracking-[0.01em] font-medium text-on-surface hover:text-primary transition-colors" href="/login">
               <ArrowLeft className="w-5 h-5" />
               Back to Login
-            </a>
+            </Link>
           </div>
         </div>
       </main>

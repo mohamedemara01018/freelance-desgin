@@ -60,7 +60,7 @@ export default function SignupPage() {
               <p className="text-[16px] leading-[24px] text-on-surface-variant">Join 50k+ professionals globally</p>
             </div>
 
-            <RegisterForm />
+            <RegisterForm  />
 
             <div className="relative flex items-center py-[16px]">
               <div className="flex-grow border-t border-outline-variant"></div>
