@@ -3,6 +3,7 @@ import FormError from '@/components/ui/FormError';
 import { authService } from '@/services/auth.service';
 import { ArrowRight, EyeIcon, EyeOffIcon, Loader2, LockIcon, MailIcon } from 'lucide-react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { FormEvent, useState } from 'react'
 
 function LoginForm() {
@@ -14,7 +15,7 @@ function LoginForm() {
     const [error, setError] = useState('');
     const [emailFocused, setEmailFocused] = useState(false);
     const [passwordFocused, setPasswordFocused] = useState(false);
-
+    const router = useRouter()
 
     const validate = () => {
         if (!email.trim()) return "Email is required";
@@ -39,6 +40,7 @@ function LoginForm() {
             })
             console.log(res)
 
+            router.replace('/')
             setEmail('');
             setPassword('');
             setError('');

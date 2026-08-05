@@ -2,6 +2,7 @@
 "use client";
 
 import FormError from "@/components/ui/FormError";
+import FormSuccess from "@/components/ui/FormSuccess";
 import { authService } from "@/services/auth.service";
 import { selectMeSlice } from "@/store/slices/authSlice";
 import { ArrowLeft, Loader2, LoaderCircle, MailOpen } from "lucide-react";
@@ -16,6 +17,7 @@ export default function VerifyEmailPage() {
   const [timeLeft, setTimeLeft] = useState(59);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('')
+  const [success, setSuccess] = useState('')
   const [resendLoading, setResendLoading] = useState(false)
   const [resendError, setResendError] = useState('')
   const inputRefs = useRef<(HTMLInputElement | null)[]>([]);
@@ -52,10 +54,12 @@ export default function VerifyEmailPage() {
 
     try {
       console.log(otp.join('').trim())
-      await authService.verfiyEmail({
+      const res = await authService.verfiyEmail({
         email: me?.email,
         code: otp.join('').trim()
       })
+      console.log(res)
+      setSuccess(res.message || 'verifyed successfully')
       setOtp(["", "", "", "", "", ""])
     } catch (error: any) {
       setError(error.message)
@@ -63,6 +67,8 @@ export default function VerifyEmailPage() {
       setLoading(false)
     }
   };
+
+  // console.log('me', me)
 
   const handleResend = async () => {
     if (timeLeft === 0) {
@@ -94,6 +100,7 @@ export default function VerifyEmailPage() {
               <div className="w-full py-4">
                 <FormError error={error} />
                 <FormError error={resendError} />
+                <FormSuccess success={success} />
               </div>
               {/* Icon/Visual */}
               <div className="w-16 h-16 rounded-full flex items-center justify-center mb-6 bg-inverse-on-surface">

@@ -15,12 +15,14 @@ export interface IUser {
 interface AuthState {
     me: IUser | null;
     isLoading: boolean;
+    initialized: boolean;
     error: string | null;
 }
 
 const initialState: AuthState = {
     me: null,
     isLoading: false,
+    initialized: false,
     error: null,
 };
 
@@ -70,11 +72,13 @@ const authSlice = createSlice({
 
             .addCase(fetchMe.fulfilled, (state, action) => {
                 state.isLoading = false;
+                state.initialized = true;
                 state.me = action.payload.user;
             })
 
             .addCase(fetchMe.rejected, (state, action) => {
                 state.isLoading = false;
+                state.initialized = true;
                 state.me = null;
                 state.error =
                     action.payload ?? "Something went wrong.";
@@ -83,5 +87,5 @@ const authSlice = createSlice({
 });
 
 export const { clearAuth, clearAuthError } = authSlice.actions;
-export const selectMeSlice = (state: RootState) => state.authSlice.me
+export const selectMeSlice = (state: RootState) => state.authSlice
 export default authSlice.reducer;

@@ -8,7 +8,7 @@ function layout({
     return (
         <div className="min-h-screen bg-background text-on-surface font-['Inter']">
             <Navbar />
-            <main className=" wrapper py-8 space-y-8">
+            <main className="wrapper py-8 space-y-8">
                 {children}
             </main>
             <Footer />
