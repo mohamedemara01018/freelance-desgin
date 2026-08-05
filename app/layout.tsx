@@ -7,6 +7,9 @@ export const metadata: Metadata = {
   title: "GigFlow – Scale Your Freelance Career With Precision",
   description:
     "GigFlow is the elite marketplace for elite independent talent. Connect with top-tier companies through AI-driven matching and secure, guaranteed payments.",
+  icons: {
+    icon: '/icon.png'
+  }
 };
 
 export default function RootLayout({
@@ -21,6 +24,7 @@ export default function RootLayout({
             __html: `(function(){try{var m=localStorage.getItem('theme');if(m==='dark'||(!m&&window.matchMedia('(prefers-color-scheme: dark)').matches)){document.documentElement.classList.add('dark');}}catch(e){}})();`,
           }}
         />
+
       </head>
       <body className="min-h-full flex flex-col  transition-colors duration-200 antialiased">
         <StoreProvider>

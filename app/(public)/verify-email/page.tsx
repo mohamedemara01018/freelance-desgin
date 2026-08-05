@@ -1,14 +1,14 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-"use client";
-
+'use client'
 import FormError from "@/components/ui/FormError";
 import FormSuccess from "@/components/ui/FormSuccess";
 import { authService } from "@/services/auth.service";
-import { selectMeSlice } from "@/store/slices/authSlice";
+import { fetchMe, selectMeSlice } from "@/store/slices/authSlice";
+import { AppDispatch } from "@/store/store";
 import { ArrowLeft, Loader2, LoaderCircle, MailOpen } from "lucide-react";
-import Link from "next/link";
-import React, { useState, useEffect, useRef, FormEvent, KeyboardEvent, ChangeEvent } from "react";
-import { useSelector } from "react-redux";
+import { useRouter } from "next/navigation";
+import { useState, useEffect, useRef, FormEvent, KeyboardEvent, ChangeEvent } from "react";
+import { useDispatch, useSelector } from "react-redux";
 
 
 
@@ -21,13 +21,20 @@ export default function VerifyEmailPage() {
   const [resendLoading, setResendLoading] = useState(false)
   const [resendError, setResendError] = useState('')
   const inputRefs = useRef<(HTMLInputElement | null)[]>([]);
-  const me = useSelector(selectMeSlice);
+  const router = useRouter();
+  const dispatch: AppDispatch = useDispatch();
+  const { me } = useSelector(selectMeSlice)
+
   useEffect(() => {
     if (timeLeft > 0) {
       const timer = setTimeout(() => setTimeLeft(timeLeft - 1), 1000);
       return () => clearTimeout(timer);
     }
   }, [timeLeft]);
+
+  useEffect(() => {
+    dispatch(fetchMe());
+  }, [dispatch]);
 
   const handleChange = (index: number, e: ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
@@ -48,6 +55,7 @@ export default function VerifyEmailPage() {
     }
   };
 
+  console.log('me in verify email', me)
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     setLoading(true)
@@ -60,6 +68,7 @@ export default function VerifyEmailPage() {
       })
       console.log(res)
       setSuccess(res.message || 'verifyed successfully')
+      router.replace('/')
       setOtp(["", "", "", "", "", ""])
     } catch (error: any) {
       setError(error.message)
@@ -87,6 +96,11 @@ export default function VerifyEmailPage() {
       setResendLoading(false)
     }
   };
+
+  const handleLogin = async () => {
+    await authService.logout();
+    router.replace('/login')
+  }
 
   return (
     <div className=" flex flex-col">
@@ -163,7 +177,7 @@ export default function VerifyEmailPage() {
                       }`}
                   >
                     {
-                      loading ? (
+                      resendLoading ? (
                         <Loader2 size={18} className="animate-spin" />
                       ) : (
                         <>
@@ -184,10 +198,12 @@ export default function VerifyEmailPage() {
 
           {/* Back to Login */}
           <div className="mt-8 text-center">
-            <Link className="flex items-center justify-center gap-2 font-sans text-sm leading-5 tracking-[0.01em] font-medium text-on-surface hover:text-primary transition-colors" href="/login">
+            <button
+              onClick={handleLogin}
+              className="flex items-center justify-center gap-2 font-sans text-sm leading-5 tracking-[0.01em] font-medium text-on-surface hover:text-primary transition-colors">
               <ArrowLeft className="w-5 h-5" />
               Back to Login
-            </Link>
+            </button>
           </div>
         </div>
       </main>

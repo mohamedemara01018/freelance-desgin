@@ -69,5 +69,52 @@ export const authService = {
             throw new Error(data.message || 'something went wrong when login')
         }
         return data
-    }
+    },
+    logout: async () => {
+        const response = await fetch(`${BASE_URL}/api/auth/logout`, {
+            method: "POST",
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            credentials: 'include',
+        })
+        const data = await response.json();
+
+        if (!response.ok) {
+            throw new Error(data.message || 'something went wrong when logout')
+        }
+        return data
+    },
+    forgetPassword: async (formData: any) => {
+        const response = await fetch(`${BASE_URL}/api/auth/forget-password`, {
+            method: "POST",
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            credentials: 'include',
+            body: JSON.stringify(formData)
+        })
+        const data = await response.json();
+
+        if (!response.ok) {
+            throw new Error(data.message || 'something went wrong when login')
+        }
+        return data
+    },
+    resetPassword: async (formData: any) => {
+        const response = await fetch(`${BASE_URL}/api/auth/reset-password`, {
+            method: "POST",
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            credentials: 'include',
+            body: JSON.stringify(formData)
+        })
+        const data = await response.json();
+
+        if (!response.ok) {
+            throw new Error(data.message || 'something went wrong when login')
+        }
+        return data
+    },
 }

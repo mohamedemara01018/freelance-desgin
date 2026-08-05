@@ -1,9 +1,9 @@
 
-import HomePage from "@/views/home-page/HomePage";
+import HomePage from "@/views/HomePage";
 
 
 
-export default function LandingPage() {
+export default function page() {
   return (
     <HomePage />
   );

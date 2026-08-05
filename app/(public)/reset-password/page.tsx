@@ -1,8 +1,12 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, ChangeEvent } from "react";
 import Link from "next/link";
 import { Eye, EyeOff, ArrowRight, ArrowLeft, Loader2, CheckCircle2 } from "lucide-react";
+import FormError from "@/components/ui/FormError";
+import { authService } from "@/services/auth.service";
+import { useRouter, useSearchParams } from "next/navigation";
 
 
 
@@ -14,6 +18,11 @@ export default function ResetPasswordPage() {
   const [strength, setStrength] = useState(0);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
+  const [notMatchMessage, setNotMatchMessage] = useState('');
+  const [error, setError] = useState('');
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const token = searchParams.get('token');
 
   useEffect(() => {
     let score = 0;
@@ -25,22 +34,39 @@ export default function ResetPasswordPage() {
     setStrength(score);
   }, [newPassword]);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleConfirmPasswordChange = (e: ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    if (!newPassword) return
+    if (!newPassword.includes(value)) {
+      setNotMatchMessage('confirm password does not match new password')
+    } else {
+      setNotMatchMessage('')
+    }
+    setConfirmPassword(value)
+  }
+
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (newPassword !== confirmPassword) {
-      alert("Passwords do not match!");
+    if (newPassword.trim() !== confirmPassword.trim()) {
+      setNotMatchMessage("Passwords do not match!");
       return;
     }
 
     setIsSubmitting(true);
-
-    setTimeout(() => {
-      setIsSubmitting(false);
+    try {
+      const res = await authService.resetPassword({
+        token,
+        password: newPassword.trim()
+      })
+      console.log(res)
+      router.replace('/login')
       setIsSuccess(true);
-      setTimeout(() => {
-        window.location.reload();
-      }, 1500);
-    }, 2000);
+    } catch (error: any) {
+      setError(error.message)
+    } finally {
+      setIsSubmitting(false)
+    }
   };
 
   const getStrengthBarClass = (index: number) => {
@@ -65,21 +91,23 @@ export default function ResetPasswordPage() {
 
   return (
     <div className=" flex flex-col ">
-      <main className="flex-grow flex items-center justify-center px-4 py-8 relative overflow-hidden">
+      <main className="grow flex items-center justify-center px-4 py-8 relative overflow-hidden">
         {/* Subtle Ambient Background Decorations */}
-       
 
-        <div className="w-full max-w-[440px] z-10">
+
+        <div className="w-full max-w-110 z-10">
           <div
             className=" backdrop-blur-sm border border-outline-variant rounded-xl p-8 md:p-10 space-y-8 transition-all duration-300"
             style={{ boxShadow: 'var(--shadow-level-2)' }}
           >
+            <FormError error={notMatchMessage} />
+            <FormError error={error} />
             {/* Heading Group */}
             <div className="text-center space-y-2">
-              <h1 className="font-['Geist'] text-[32px] leading-[40px] font-semibold tracking-[-0.01em] text-on-surface">
+              <h1 className="font-['Geist'] text-[32px] leading-10 font-semibold tracking-[-0.01em] text-on-surface">
                 Set New Password
               </h1>
-              <p className="font-sans text-[16px] leading-[24px] font-normal text-on-surface-variant max-w-[320px] mx-auto">
+              <p className="font-sans text-[16px] leading-6 font-normal text-on-surface-variant max-w-[320px] mx-auto">
                 Your new password must be different from previous passwords.
               </p>
             </div>
@@ -113,7 +141,7 @@ export default function ResetPasswordPage() {
                       <div key={i} className={getStrengthBarClass(i)}></div>
                     ))}
                   </div>
-                  <span className={`block font-['Geist'] text-[12px] leading-[16px] font-semibold ${strength > 2 ? 'text-primary' : 'text-on-surface-variant'}`}>
+                  <span className={`block font-['Geist'] text-[12px] leading-4 font-semibold ${strength > 2 ? 'text-primary' : 'text-on-surface-variant'}`}>
                     {newPassword.length > 0 ? `Strength: ${strengthLabels[strength]}` : 'Password strength'}
                   </span>
                 </div>
@@ -127,7 +155,7 @@ export default function ResetPasswordPage() {
                   placeholder="Confirm Password"
                   required
                   value={confirmPassword}
-                  onChange={(e) => setConfirmPassword(e.target.value)}
+                  onChange={handleConfirmPasswordChange}
                   className="floating-label-input w-full h-14 px-4 bg-transparent border border-outline-variant rounded-lg font-sans text-[16px] text-on-surface outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all duration-200 peer"
                 />
                 <button
@@ -143,9 +171,9 @@ export default function ResetPasswordPage() {
               <button
                 type="submit"
                 disabled={isSubmitting || isSuccess}
-                className={`w-full h-14 text-on-primary font-['Geist'] text-[14px] leading-[20px] font-medium tracking-[0.01em] rounded-lg transition-all duration-200 flex items-center justify-center gap-2 ${isSuccess
+                className={`w-full h-14 text-on-primary font-['Geist'] text-[14px] leading-5 font-medium tracking-[0.01em] rounded-lg transition-all duration-200 flex items-center justify-center gap-2 ${isSuccess
                   ? "bg-primary"
-                  : "shadow-[inset_0_1px_0_rgba(255,255,255,0.15)] hover:-translate-y-[1px] active:scale-98"
+                  : "shadow-[inset_0_1px_0_rgba(255,255,255,0.15)] hover:-translate-y-px active:scale-98"
                   }`}
                 style={{ background: buttonGradient }}
                 onMouseEnter={(e) => {
@@ -176,7 +204,7 @@ export default function ResetPasswordPage() {
 
             {/* Back link */}
             <div className="text-center">
-              <Link href="#" className="font-['Geist'] text-[14px] leading-5 font-medium tracking-[0.01em] text-on-surface-variant hover:text-primary transition-colors flex items-center justify-center gap-1">
+              <Link href="/login" className="font-['Geist'] text-[14px] leading-5 font-medium tracking-[0.01em] text-on-surface-variant hover:text-primary transition-colors flex items-center justify-center gap-1">
                 <ArrowLeft size={20} />
                 Back to Login
               </Link>
