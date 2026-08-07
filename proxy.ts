@@ -104,6 +104,26 @@ export async function proxy(request: NextRequest) {
             return NextResponse.redirect(new URL("/", request.url));
         }
 
+
+        if (
+            !user.isIdentityVerified &&
+            pathname !== "/verify-identity"
+        ) {
+            return NextResponse.redirect(
+                new URL("/verify-identity", request.url)
+            );
+        }
+
+        // Prevent verified users from revisiting verify page
+        if (
+            user.isIdentityVerified &&
+            pathname === "/verify-identity"
+        ) {
+            return NextResponse.redirect(new URL("/", request.url));
+        }
+
+
+
         // Client cannot access freelancer routes
         if (
             user.role === "client" &&

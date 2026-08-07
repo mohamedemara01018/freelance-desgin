@@ -29,23 +29,7 @@ export default function LoginPage() {
 
           <LoginForm />
 
-          {/* Divider */}
-          <div className="relative flex items-center justify-center py-2">
-            <div className="absolute inset-0 flex items-center">
-              <span className="w-full border-t border-outline-variant"></span>
-            </div>
-            <span className="relative bg-background px-4 text-xs font-medium text-outline uppercase tracking-widest">
-              Or continue with
-            </span>
-          </div>
-
-          {/* Social Logins */}
-          <div className="grid grid-cols-1 gap-4">
-            <button className="flex items-center justify-center gap-2 px-4 py-3 border border-outline-variant rounded-xl hover:bg-surface-container hover:border-outline transition-all focus:ring-2 focus:ring-outline-variant/30 outline-none cursor-pointer">
-              <GoogleIcon className="w-5 h-5" />
-              <span className="text-sm font-medium text-on-surface">Google</span>
-            </button>
-          </div>
+          
 
           {/* Footer Link */}
           <Link href={'/role'} className="text-center text-sm text-on-surface-variant">

@@ -1,15 +1,18 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 'use client'
 import {
     ArrowRight,
     Loader2,
     CheckCircle2,
-    TriangleAlert,
 } from 'lucide-react';
 import { ChangeEvent, useEffect, useState } from 'react';
 import { InputField } from './InputFeild';
 import { authService } from '@/services/auth.service';
 import { useRouter, useSearchParams } from 'next/navigation';
 import FormError from '@/components/ui/FormError';
+import { GoogleIcon } from '@/utils/icons.utils';
+import { BASE_URL } from '@/utils/constant.utils';
+import { Sign } from '@/utils/enums.utils';
 
 
 function RegisterForm() {
@@ -24,6 +27,7 @@ function RegisterForm() {
         // role: "freelancer"
     })
     const [confirmPassword, setConfirmPassword] = useState('')
+    const [googleLoading, setGoogleLoading] = useState(false)
     const [confirmPasswordError, setConfirmPasswordError] = useState('')
     const router = useRouter();
 
@@ -96,7 +100,6 @@ function RegisterForm() {
             })
             setConfirmPassword('')
 
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
         } catch (error: any) {
             setError(error.message)
         } finally {
@@ -104,6 +107,16 @@ function RegisterForm() {
 
         }
     };
+
+    const handleGoogleRegister = () => {
+        try {
+            setError('');
+            setGoogleLoading(true)
+            window.location.href = BASE_URL + `/api/auth/google/login?sign=${Sign.REGISTER}&role=${role}`
+        } catch (error: any) {
+            setError(error.message)
+        }
+    }
 
     return (
         <form className="space-y-4" onSubmit={handleSubmit}>
@@ -181,6 +194,22 @@ function RegisterForm() {
                     </>
                 )}
             </button>
+            <div className="relative flex items-center py-4">
+                <div className="grow border-t border-outline-variant"></div>
+                <span className="shrink mx-4 text-on-surface-variant text-[12px] leading-4 font-semibold">OR CONTINUE WITH</span>
+                <div className="grow border-t border-outline-variant"></div>
+            </div>
+
+            {/* Social Logins */}
+            <div className="grid grid-cols-1 gap-4">
+                <button
+                    onClick={handleGoogleRegister}
+                    className="flex items-center justify-center gap-2 px-4 py-3 border border-outline-variant rounded-xl hover:bg-surface-container hover:border-outline transition-all focus:ring-2 focus:ring-outline-variant/30 outline-none">
+                    <GoogleIcon className="w-5 h-5" />
+                    <span className="text-sm font-medium text-on-surface">{googleLoading ? 'Redirecting...' : 'Google'}</span>
+                </button>
+
+            </div>
         </form>
     );
 }

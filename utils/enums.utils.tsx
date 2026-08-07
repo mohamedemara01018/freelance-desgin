@@ -3,3 +3,15 @@ export enum UserRole {
     FREELANCER = "freelancer",
     ADMIN = "admin",
 }
+
+export enum Sign {
+    REGISTER = "register",
+    LOGIN = "login",
+}
+
+
+export enum DocumentType {
+    NATIONAL_ID = "national_id",
+    PASSPORT = "passport",
+    DRIVING_LICENSE = "driving_license",
+}

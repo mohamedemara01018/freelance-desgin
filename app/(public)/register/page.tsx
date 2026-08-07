@@ -60,22 +60,9 @@ export default function SignupPage() {
               <p className="text-[16px] leading-[24px] text-on-surface-variant">Join 50k+ professionals globally</p>
             </div>
 
-            <RegisterForm  />
+            <RegisterForm />
 
-            <div className="relative flex items-center py-[16px]">
-              <div className="flex-grow border-t border-outline-variant"></div>
-              <span className="flex-shrink mx-[16px] text-on-surface-variant text-[12px] leading-[16px] font-semibold">OR CONTINUE WITH</span>
-              <div className="flex-grow border-t border-outline-variant"></div>
-            </div>
 
-            {/* Social Logins */}
-            <div className="grid grid-cols-1 gap-4">
-              <button className="flex items-center justify-center gap-2 px-4 py-3 border border-outline-variant rounded-xl hover:bg-surface-container hover:border-outline transition-all focus:ring-2 focus:ring-outline-variant/30 outline-none">
-                <GoogleIcon className="w-5 h-5" />
-                <span className="text-sm font-medium text-on-surface">Google</span>
-              </button>
-
-            </div>
 
             <Link href={'/login'} className="block text-center text-[14px] leading-[20px] text-on-surface-variant mt-[32px]">
               Already have an account?{' '}
